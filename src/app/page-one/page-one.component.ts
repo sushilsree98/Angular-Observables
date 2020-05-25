@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { interval, Subscription, Observable } from 'rxjs';
+import { map, filter } from 'rxjs/operators'
 
 @Component({
   selector: 'app-page-one',
@@ -20,13 +21,30 @@ export class PageOneComponent implements OnInit, OnDestroy {
     /* Creating a custom Observable */
     this.customObservable = Observable.create(observer=>{
       let count = 0
+
       setInterval(()=>{
         observer.next(count)
+        if(count === 2) observer.complete();
+        if (count > 3) {
+          observer.error(new Error("Error occured!"));
+        }
         count++;
       },1000)
     });
-    this.firstObsListener = this.customObservable.subscribe(data=>{
+
+    
+
+    this.firstObsListener = this.customObservable.pipe(filter(data => {
+      return data > 0;
+    }), map(data => {
+      return "round "+ (data);
+    }))
+    .subscribe(data=>{
       console.log(data);
+    },(err)=>{
+      console.log(err);
+    },()=>{
+      console.log("process completed")
     })
   }
 

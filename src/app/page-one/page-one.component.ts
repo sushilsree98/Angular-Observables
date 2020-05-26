@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { interval, Subscription, Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators'
+import { map, filter } from 'rxjs/operators';
+import { AppService } from '../app.service'
 
 @Component({
   selector: 'app-page-one',
@@ -11,7 +12,7 @@ export class PageOneComponent implements OnInit, OnDestroy {
   customObservable;
   private firstObsListener: Subscription;
 
-  constructor() { }
+  constructor(private user:AppService) { }
 
   ngOnInit() {
     // this.firstObsListener = interval(1000).subscribe((count) => {
@@ -46,6 +47,10 @@ export class PageOneComponent implements OnInit, OnDestroy {
     },()=>{
       console.log("process completed")
     })
+  }
+
+  onActivate(){
+    this.user.activatedEmitter.next(true)
   }
 
   ngOnDestroy() {
